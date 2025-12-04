@@ -68,6 +68,7 @@
 </template>
 
 <script setup>
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 import { ref, watch, computed } from 'vue'
 import axios from 'axios'
 import Card from './Card.vue'
@@ -102,7 +103,7 @@ async function checkApi(link) {
     return "Link is required."
   }
   try {
-    const response = await axios.get(`http://localhost:3000/api/get-metadata?link=${link}`)
+    const response = await axios.get(`${API_URL}/api/get-metadata?link=${link}`)
     if (response.data.error) {
       return "An error occurred while fetching metadata."
     }
@@ -151,7 +152,7 @@ const downloadVideo = (video, current, total) => {
     downloadProgress.value = 0
 
     const eventSource = new EventSource(
-      `http://localhost:3000/api/download?link=${encodeURIComponent(video.url)}&quality=${selectedQuality.value}&type=${selectedType.value}`
+      `${API_URL}/api/download?link=${encodeURIComponent(video.url)}&quality=${selectedQuality.value}&type=${selectedType.value}`
     )
 
     eventSource.onmessage = (event) => {
@@ -179,7 +180,7 @@ const downloadVideo = (video, current, total) => {
 
         // Dosyayı indir
         setTimeout(() => {
-          window.location.href = `http://localhost:3000/api/download-file/${data.file}`
+          window.location.href = `${API_URL}/api/download-file/${data.file}`
         }, 500)
 
         eventSource.close()
